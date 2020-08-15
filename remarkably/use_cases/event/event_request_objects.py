@@ -1,5 +1,7 @@
 import collections
+from abc import ABC
 from typing import Dict, Union
+from uuid import UUID
 
 from marshmallow import ValidationError
 
@@ -9,19 +11,19 @@ from shared.request_object import InvalidRequestObject
 
 
 class SaveEventRequestObject(req.ValidRequestObject):
-    def __init__(self, article_data: Dict[str, str]):
-        self.data = article_data
+    def __init__(self, event_data: Dict[str, str]):
+        self.data = event_data
 
     @classmethod
     def from_dict(cls, adict: Dict[str, str]) -> Union['SaveEventRequestObject', InvalidRequestObject]:
-        global create_article
+        global create_event
         invalid_req = req.InvalidRequestObject()
 
         if not isinstance(adict, collections.Mapping):
-            invalid_req.add_error('article_data', 'is not iterable')
+            invalid_req.add_error('event_data', 'is not iterable')
 
         try:
-            create_article = CreateEventSchema().load(adict)
+            create_event = CreateEventSchema().load(adict)
         except ValidationError as v_err:
             for param in v_err.messages:
                 invalid_req.add_error(param, v_err.messages[param])
@@ -29,4 +31,23 @@ class SaveEventRequestObject(req.ValidRequestObject):
         if invalid_req.has_errors():
             return invalid_req
 
-        return SaveEventRequestObject(create_article)
+        return SaveEventRequestObject(create_event)
+
+
+class GetEventsRequestObject(req.ValidRequestObject, ABC):
+    def __init__(self, event_data: Dict[str, str]):
+        self.data = event_data
+
+    @classmethod
+    def from_filter_list(cls, filter_params: Dict[str, str]) -> 'GetEventsRequestObject':
+        return GetEventsRequestObject(filter_params)
+
+
+class GetEventRequestObject(req.ValidRequestObject, ABC):
+    def __init__(self, uuid: UUID):
+        self.data = uuid
+
+    @classmethod
+    def from_uuid(cls, uuid: UUID) -> 'GetEventRequestObject':
+        return GetEventRequestObject(uuid)
+
