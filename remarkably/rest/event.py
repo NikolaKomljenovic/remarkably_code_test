@@ -149,3 +149,51 @@ class SpecificEvent(Resource):
         result = TotalByTypeResponseSchema().dump(response.value)
 
         return result
+
+
+@api.route('/oldestevent')
+class SpecificEvent(Resource):
+    @api.response(200, 'Success', event_model)
+    @api.response(404, 'Resource error')
+    @api.response(400, 'Parameters error')
+    @api.response(500, 'System error')
+    # GET oldest event from database
+    def get(self):
+        use_case = uc.OldestEventUseCase(EventRepo())
+
+        response = use_case.execute()
+
+        if not response:
+            api.abort(STATUS_CODES[response.type],
+                      response.message,
+                      error_code=response.error_code,
+                      error_key=response.error_key,
+                      error_params=response.error_params)
+
+        result = EventResponseSchema().dump(response.value)
+
+        return result
+
+
+@api.route('/newestevent')
+class SpecificEvent(Resource):
+    @api.response(200, 'Success', event_model)
+    @api.response(404, 'Resource error')
+    @api.response(400, 'Parameters error')
+    @api.response(500, 'System error')
+    # GET newest event from database
+    def get(self):
+        use_case = uc.NewestEventUseCase(EventRepo())
+
+        response = use_case.execute()
+
+        if not response:
+            api.abort(STATUS_CODES[response.type],
+                      response.message,
+                      error_code=response.error_code,
+                      error_key=response.error_key,
+                      error_params=response.error_params)
+
+        result = EventResponseSchema().dump(response.value)
+
+        return result

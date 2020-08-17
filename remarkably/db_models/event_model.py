@@ -30,6 +30,14 @@ class Event(db.Model):
         }
 
     @classmethod
+    def find_oldest_event(cls):
+        return cls.query.order_by(cls.created_date.asc()).first()
+
+    @classmethod
+    def find_newest_event(cls):
+        return cls.query.order_by(cls.created_date.desc()).first()
+
+    @classmethod
     def find_all_events(cls, filter_params):
         query = cls.query
 

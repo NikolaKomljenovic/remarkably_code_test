@@ -40,5 +40,25 @@ class GetTotalEventsByTypeUseCase(uc.UseCase):
         self.repo = repo
 
     def process_request(self, request_object: None) -> ResponseSuccess:
-        event = self.repo.get_event_count_by_type()
+        event_count = self.repo.get_event_count_by_type()
+        return res.ResponseSuccess(event_count)
+
+
+class OldestEventUseCase(uc.UseCase):
+    def __init__(self, repo: EventRepo):
+        super().__init__()
+        self.repo = repo
+
+    def process_request(self, request_object: None) -> ResponseSuccess:
+        event = self.repo.oldest_event()
+        return res.ResponseSuccess(event)
+
+
+class NewestEventUseCase(uc.UseCase):
+    def __init__(self, repo: EventRepo):
+        super().__init__()
+        self.repo = repo
+
+    def process_request(self, request_object: None) -> ResponseSuccess:
+        event = self.repo.newest_event()
         return res.ResponseSuccess(event)
