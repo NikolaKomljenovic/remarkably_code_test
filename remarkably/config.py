@@ -12,6 +12,8 @@ class BaseConfig(object):
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    SECRET_KEY = 'x-rmb-eventscv-token'
+
 
 app_config = {
     "base_config": "config.BaseConfig"

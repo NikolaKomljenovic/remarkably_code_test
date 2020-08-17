@@ -5,7 +5,7 @@ We need to record one-time "Events" and relate them to a User's data, such peopl
 
 ### Functional Criteria
 
-1. ~~The solution should not use existing databases or tables~~
+1. ~~The solution should not use existing databases or tables~~ \
 2. The solution must expose an API surface that allows the following:
   ```
   a. `POST` new Event (done)
@@ -18,7 +18,7 @@ We need to record one-time "Events" and relate them to a User's data, such peopl
  
  ### Optional Criteria
  
- ~~1. Include a "one-line" method for running the solution locally, such as a script file, docker compose, etc~~
+ 1. ~~Include a "one-line" method for running the solution locally, such as a script file, docker compose, etc~~
  2. Include an API endpoint that returns the following stats about Events:
    ```
    a. Total by type (done)
