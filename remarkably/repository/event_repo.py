@@ -1,5 +1,5 @@
 from db_models.event_model import Event
-from mappers.event_mappers import EventResponseSchema
+from mappers.event_mappers import EventResponseSchema, TotalByTypeResponseSchema
 from repository import sqlalchemy_repo as sr
 
 
@@ -15,3 +15,7 @@ class EventRepo(sr.SqlAlchemyRepo):
     def get_event(self, event_id):
         event = Event.find_by_id(event_id=event_id)
         return EventResponseSchema().dump(event)
+
+    def get_event_count_by_type(self):
+        event_by_type = Event.find_total_by_type()
+        return TotalByTypeResponseSchema().dump(event_by_type)

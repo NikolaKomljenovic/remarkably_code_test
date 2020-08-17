@@ -3,7 +3,7 @@ from uuid import UUID
 from flask import request
 from flask_restplus import Namespace, Resource, fields
 
-from mappers.event_mappers import EventResponseSchema
+from mappers.event_mappers import EventResponseSchema, TotalByTypeResponseSchema
 from repository.event_repo import EventRepo
 from shared import response_object as res
 from shared.enum.order_enum import OrderType
@@ -23,15 +23,24 @@ STATUS_CODES = {
 }
 
 # SWAGGER DOC
-event_model = api.model('Article model', {
+event_model = api.model('Event model', {
     'item': fields.String(description='event id'),
     'detail': fields.String(description='Details about event'),
     'type': fields.String(description='Type of an event'),
     'created': fields.DateTime(description='Date of event creation')
 })
 
-create_event_model = api.model('Create article model', {
-    'content': fields.String(description='article content')
+create_event_model = api.model('Create event model', {
+    'detail': fields.String(description='Details about event'),
+    'type': fields.String(description='Type of an event'),
+})
+
+event_total_by_type_model = api.model('Total events by type model', {
+    'system': fields.Integer(description='System event total'),
+    'external': fields.Integer(description='External event total'),
+    'staff': fields.Integer(description='Staff event total'),
+    'user': fields.Integer(description='User event total'),
+    'unknown': fields.Integer(description='Unknown event total')
 })
 
 
@@ -93,7 +102,6 @@ class SpecificEvent(Resource):
     @api.response(404, 'Resource error')
     @api.response(400, 'Parameters error')
     @api.response(500, 'System error')
-    @api.expect(create_event_model)
     # GET specific event from database
     def get(self, uuid):
         try:
@@ -115,5 +123,29 @@ class SpecificEvent(Resource):
                       error_params=response.error_params)
 
         result = EventResponseSchema().dump(response.value)
+
+        return result
+
+
+@api.route('/totalbytype')
+class SpecificEvent(Resource):
+    @api.response(200, 'Success', event_total_by_type_model)
+    @api.response(404, 'Resource error')
+    @api.response(400, 'Parameters error')
+    @api.response(500, 'System error')
+    # GET count of events by type from database
+    def get(self):
+        use_case = uc.GetTotalEventsByTypeUseCase(EventRepo())
+
+        response = use_case.execute()
+
+        if not response:
+            api.abort(STATUS_CODES[response.type],
+                      response.message,
+                      error_code=response.error_code,
+                      error_key=response.error_key,
+                      error_params=response.error_params)
+
+        result = TotalByTypeResponseSchema().dump(response.value)
 
         return result

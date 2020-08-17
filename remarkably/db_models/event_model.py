@@ -20,6 +20,16 @@ class Event(db.Model):
         return cls.query.filter_by(id=event_id).first()
 
     @classmethod
+    def find_total_by_type(cls):
+        return {
+            'unknown': cls.query.filter_by(type=EventType.UNKNOWN).count(),
+            'external': cls.query.filter_by(type=EventType.EXTERNAL).count(),
+            'staff': cls.query.filter_by(type=EventType.STAFF).count(),
+            'user': cls.query.filter_by(type=EventType.USER).count(),
+            'system': cls.query.filter_by(type=EventType.SYSTEM).count()
+        }
+
+    @classmethod
     def find_all_events(cls, filter_params):
         query = cls.query
 

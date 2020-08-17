@@ -50,4 +50,3 @@ class GetEventRequestObject(req.ValidRequestObject, ABC):
     @classmethod
     def from_uuid(cls, uuid: UUID) -> 'GetEventRequestObject':
         return GetEventRequestObject(uuid)
-

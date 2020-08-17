@@ -4,9 +4,7 @@ from shared import response_object as res
 
 class UseCase(object):
 
-    def execute(self, request_object):
-        if not request_object:
-            return res.ResponseFailure.build_from_invalid_request_object(request_object)
+    def execute(self, request_object=None):
         try:
             result = self.process_request(request_object)
             return result

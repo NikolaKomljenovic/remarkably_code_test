@@ -32,3 +32,13 @@ class GetEventUseCase(uc.UseCase):
     def process_request(self, request_object: GetEventRequestObject) -> ResponseSuccess:
         event = self.repo.get_event(event_id=request_object.data)
         return res.ResponseSuccess(event)
+
+
+class GetTotalEventsByTypeUseCase(uc.UseCase):
+    def __init__(self, repo: EventRepo):
+        super().__init__()
+        self.repo = repo
+
+    def process_request(self, request_object: None) -> ResponseSuccess:
+        event = self.repo.get_event_count_by_type()
+        return res.ResponseSuccess(event)
