@@ -4,6 +4,7 @@ from db_models.event_model import Event
 
 
 class CreateEventSchema(Schema):
+    item = fields.Str()
     type = fields.Str()
     detail = fields.Str()
 
@@ -16,6 +17,7 @@ class EventResponseSchema(Schema):
     id = fields.UUID(dump_only=True)
     type = fields.Str(dump_only=True)
     detail = fields.Str(dump_only=True)
+    item = fields.Str(dump_only=True)
     created_date = fields.Str(dump_only=True)
 
 

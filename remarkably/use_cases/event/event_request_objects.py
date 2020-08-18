@@ -50,3 +50,12 @@ class GetEventRequestObject(req.ValidRequestObject, ABC):
     @classmethod
     def from_uuid(cls, uuid: UUID) -> 'GetEventRequestObject':
         return GetEventRequestObject(uuid)
+
+
+class GetEventForSpecificItemRequestObject(req.ValidRequestObject, ABC):
+    def __init__(self, uuid: UUID):
+        self.data = uuid
+
+    @classmethod
+    def from_uuid(cls, uuid: UUID) -> 'GetEventForSpecificItemRequestObject':
+        return GetEventForSpecificItemRequestObject(uuid)

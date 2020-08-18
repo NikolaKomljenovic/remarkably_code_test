@@ -1,3 +1,5 @@
+from db_models.moveout_model import MoveOut
+
 from app import create_app
 
 application = create_app(config_name='base_config')

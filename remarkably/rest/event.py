@@ -25,13 +25,15 @@ STATUS_CODES = {
 
 # SWAGGER DOC
 event_model = api.model('Event model', {
-    'item': fields.String(description='event id'),
+    'id': fields.String(description='event id'),
+    'item': fields.String(description='move out item id'),
     'detail': fields.String(description='Details about event'),
     'type': fields.String(description='Type of an event'),
     'created': fields.DateTime(description='Date of event creation')
 })
 
 create_event_model = api.model('Create event model', {
+    'item': fields.String(description='move out item id'),
     'detail': fields.String(description='Details about event'),
     'type': fields.String(description='Type of an event'),
 })
@@ -55,7 +57,7 @@ class Event(Resource):
     # POST new event into database
     def post(self):
         if request.headers.get('Secret') != config.BaseConfig.SECRET_KEY:
-            return api.abort(400, 'You are not allowed to get data from endpoint')
+            return api.abort(401, 'You are not allowed to get data from endpoint')
 
         # Get event data
         event = request.get_json()
@@ -79,7 +81,7 @@ class Event(Resource):
 
     def get(self):
         if request.headers.get('Secret') != config.BaseConfig.SECRET_KEY:
-            return api.abort(400, 'You are not allowed to get data from endpoint')
+            return api.abort(401, 'You are not allowed to get data from endpoint')
 
         filter_params = {
             'sort': request.args.get('sort', default=OrderType.DESCENDING, type=OrderType)
@@ -112,7 +114,7 @@ class SpecificEvent(Resource):
     # GET specific event from database
     def get(self, uuid):
         if request.headers.get('Secret') != config.BaseConfig.SECRET_KEY:
-            return api.abort(400, 'You are not allowed to get data from endpoint')
+            return api.abort(401, 'You are not allowed to get data from endpoint')
 
         try:
             uuid = UUID(uuid)
@@ -137,6 +139,40 @@ class SpecificEvent(Resource):
         return result
 
 
+@api.route('/specificitem/<string:uuid>')
+class SpecificEvent(Resource):
+    @api.response(200, 'Success', [event_model])
+    @api.response(404, 'Resource error')
+    @api.response(400, 'Parameters error')
+    @api.response(500, 'System error')
+    # GET all events for specific item from database
+    def get(self, uuid):
+        if request.headers.get('Secret') != config.BaseConfig.SECRET_KEY:
+            return api.abort(401, 'You are not allowed to get data from this endpoint')
+
+        try:
+            uuid = UUID(uuid)
+        except ValueError:
+            return api.abort(400, 'Wrong input data provided')
+
+        request_object = req.GetEventForSpecificItemRequestObject.from_uuid(uuid=uuid)
+
+        use_case = uc.GetEventForSpecificItemUseCase(EventRepo())
+
+        response = use_case.execute(request_object)
+
+        if not response:
+            api.abort(STATUS_CODES[response.type],
+                      response.message,
+                      error_code=response.error_code,
+                      error_key=response.error_key,
+                      error_params=response.error_params)
+
+        result = EventResponseSchema(many=True).dump(response.value)
+
+        return result
+
+
 @api.route('/totalbytype')
 class SpecificEvent(Resource):
     @api.response(200, 'Success', event_total_by_type_model)
@@ -146,7 +182,7 @@ class SpecificEvent(Resource):
     # GET count of events by type from database
     def get(self):
         if request.headers.get('Secret') != config.BaseConfig.SECRET_KEY:
-            return api.abort(400, 'You are not allowed to get data from endpoint')
+            return api.abort(401, 'You are not allowed to get data from endpoint')
 
         use_case = uc.GetTotalEventsByTypeUseCase(EventRepo())
 
@@ -173,7 +209,7 @@ class SpecificEvent(Resource):
     # GET oldest event from database
     def get(self):
         if request.headers.get('Secret') != config.BaseConfig.SECRET_KEY:
-            return api.abort(400, 'You are not allowed to get data from endpoint')
+            return api.abort(401, 'You are not allowed to get data from endpoint')
 
         use_case = uc.OldestEventUseCase(EventRepo())
 
@@ -200,7 +236,7 @@ class SpecificEvent(Resource):
     # GET newest event from database
     def get(self):
         if request.headers.get('Secret') != config.BaseConfig.SECRET_KEY:
-            return api.abort(400, 'You are not allowed to get data from endpoint')
+            return api.abort(401, 'You are not allowed to get data from endpoint')
 
         use_case = uc.NewestEventUseCase(EventRepo())
 

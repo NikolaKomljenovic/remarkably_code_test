@@ -11,6 +11,7 @@ class Event(db.Model):
     id = db.Column(UUID(as_uuid=True),
                    primary_key=True,
                    server_default=db.text("uuid_generate_v4()"))
+    item = db.Column(UUID(as_uuid=True), db.ForeignKey('moveout.id'), nullable=False)
     detail = db.Column(db.String(200), unique=False, nullable=False)
     type = db.Column(db.Enum(EventType), unique=False, nullable=False)
     created_date = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
@@ -18,6 +19,10 @@ class Event(db.Model):
     @classmethod
     def find_by_id(cls, event_id):
         return cls.query.filter_by(id=event_id).first()
+
+    @classmethod
+    def find_by_item_id(cls, item_id):
+        return cls.query.filter_by(item=item_id).all()
 
     @classmethod
     def find_total_by_type(cls):

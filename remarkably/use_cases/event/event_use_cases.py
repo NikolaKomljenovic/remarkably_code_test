@@ -1,7 +1,8 @@
 from repository.event_repo import EventRepo
 from shared import response_object as res, use_case as uc
 from shared.response_object import ResponseSuccess
-from use_cases.event.event_request_objects import SaveEventRequestObject, GetEventRequestObject
+from use_cases.event.event_request_objects import SaveEventRequestObject, GetEventRequestObject, \
+    GetEventForSpecificItemRequestObject
 
 
 class SaveEventUseCase(uc.UseCase):
@@ -61,4 +62,14 @@ class NewestEventUseCase(uc.UseCase):
 
     def process_request(self, request_object: None) -> ResponseSuccess:
         event = self.repo.newest_event()
+        return res.ResponseSuccess(event)
+
+
+class GetEventForSpecificItemUseCase(uc.UseCase):
+    def __init__(self, repo: EventRepo):
+        super().__init__()
+        self.repo = repo
+
+    def process_request(self, request_object: GetEventForSpecificItemRequestObject) -> ResponseSuccess:
+        event = self.repo.get_event_by_item(item_id=request_object.data)
         return res.ResponseSuccess(event)
