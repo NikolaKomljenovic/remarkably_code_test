@@ -27,20 +27,6 @@ We need to record one-time "Events" and relate them to a User's data, such peopl
    ```
  3. Include API documentation that describes request and response parameters for each endpoint (done)
 
-## Solution description
-
-Solution is created using Flask microframework and postgres database. 
-
-Automatic migrations of database (and seed data) are preformed after docker-compose up command.
-
-Database connect:
-```
-'user': 'postgres',
-'password': 'password',
-'db': 'remarkably_db',
-'host': 'localhost',
-'port': '5431'
-```
 ## Build and run
 
 For starting postgres and API containers do the following in repo folder:
@@ -52,6 +38,20 @@ This will start postgres container at port `5431` and API container at port `500
 
 Database remarkably_db will be automatically created after docker-compose up.
 
+## Solution description
+
+Solution is created using Flask microframework and postgres database. 
+
+Automatic migrations of database (and seed data) are preformed after docker-compose up command. Seed method is adding sample move_out data into database.
+
+Database connect:
+```
+'user': 'postgres',
+'password': 'password',
+'db': 'remarkably_db',
+'host': 'localhost',
+'port': '5431'
+```
 ## API documentation
 
 Visit: `http://localhost:5000/api` for Swagger documentation (after docker-compose up).
