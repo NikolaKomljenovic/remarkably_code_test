@@ -1,11 +1,14 @@
 class BaseConfig(object):
+    DEBUG = True
+    DEVELOPMENT = True
+
     # postgres
     POSTGRES = {
         'user': 'postgres',
         'pw': 'password',
         'db': 'remarkably_db',
-        'host': 'localhost',
-        'port': '5431',
+        'host': 'remarkably_db',
+        'port': '5432',
     }
 
     SQLALCHEMY_DATABASE_URI = 'postgresql://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
