@@ -54,7 +54,7 @@ Database connect:
 ```
 ## API documentation
 
-Visit: `http://localhost:5000/api` for Swagger documentation (after docker-compose up).
+Visit: `http://<machine_ip or localhost>:5000/api` for Swagger documentation (after docker-compose up).
 
 ## Postman collection for testing endpoints
 
